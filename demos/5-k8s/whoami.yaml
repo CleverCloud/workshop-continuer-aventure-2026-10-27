@@ -1,0 +1,41 @@
+# Clever Cloud training — a tiny workload for CKE
+# Apply in your own namespace:  kubectl apply -n <your-name> -f whoami.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: whoami
+  labels:
+    app: whoami
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: whoami
+  template:
+    metadata:
+      labels:
+        app: whoami
+    spec:
+      containers:
+        - name: whoami
+          image: traefik/whoami:v1.11.0   # answers with the pod name and request details
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              memory: 64Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: whoami
+spec:
+  type: ClusterIP          # internal only; reach it with kubectl port-forward
+  selector:
+    app: whoami
+  ports:
+    - port: 80
+      targetPort: 80

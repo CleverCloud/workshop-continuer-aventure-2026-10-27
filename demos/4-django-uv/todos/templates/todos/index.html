@@ -1,0 +1,32 @@
+{% extends "todos/base.html" %}
+
+{% block title %}My Todo Lists{% endblock %}
+
+{% block content %}
+<h2>My Todo Lists</h2>
+
+<form method="post" action="{% url 'list_create' %}">
+    {% csrf_token %}
+    <input type="text" name="title" placeholder="New list name..." required>
+    <button type="submit" class="btn">Create List</button>
+</form>
+
+{% if todo_lists %}
+    {% for list in todo_lists %}
+    <div class="list-item">
+        <div>
+            <a href="{% url 'list_detail' list.id %}"><strong>{{ list.title }}</strong></a>
+            <small style="color: #666; margin-left: 1rem;">{{ list.items.count }} item(s)</small>
+        </div>
+        <div class="actions">
+            <form method="post" action="{% url 'list_delete' list.id %}" style="margin: 0;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-small" onclick="return confirm('Delete this list?')">Delete</button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <p style="color: #666; margin-top: 2rem;">No lists yet. Create one to get started!</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,11 @@
+[project]
+name = "django-todo-list"
+version = "0.1.0"
+description = "A simple Django to-do list application"
+requires-python = ">=3.11"
+dependencies = [
+    "django>=5.0,<6.0",
+    "uvicorn>=0.30.0",
+    "psycopg2-binary>=2.9.9",
+    "python-dotenv>=1.0.0",
+]

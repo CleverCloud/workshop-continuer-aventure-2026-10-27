@@ -1,0 +1,37 @@
+{% extends "todos/base.html" %}
+
+{% block title %}{{ todo_list.title }}{% endblock %}
+
+{% block content %}
+<a href="{% url 'index' %}" class="back-link">&larr; Back to lists</a>
+
+<h2>{{ todo_list.title }}</h2>
+
+<form method="post" action="{% url 'item_create' todo_list.id %}">
+    {% csrf_token %}
+    <input type="text" name="title" placeholder="New item..." required>
+    <button type="submit" class="btn">Add Item</button>
+</form>
+
+{% if todo_list.items.all %}
+    {% for item in todo_list.items.all %}
+    <div class="list-item {% if item.completed %}completed{% endif %}">
+        <div>{{ item.title }}</div>
+        <div class="actions">
+            <form method="post" action="{% url 'item_toggle' todo_list.id item.id %}" style="margin: 0;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-small">
+                    {% if item.completed %}Undo{% else %}Complete{% endif %}
+                </button>
+            </form>
+            <form method="post" action="{% url 'item_delete' todo_list.id item.id %}" style="margin: 0;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-small" onclick="return confirm('Delete this item?')">Delete</button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <p style="color: #666; margin-top: 2rem;">No items yet. Add one above!</p>
+{% endif %}
+{% endblock %}
